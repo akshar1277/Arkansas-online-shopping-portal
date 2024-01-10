@@ -30,7 +30,7 @@ const ProductScreen = ({match}) => {
           dispatch(fetchProductDetailsSuccess(data));
         } catch (err) {
   
-          dispatch(fetchProductDetailsFailure(err.responsse && err.responsse.data.message ? err.response.data.message : err.message));
+          dispatch(fetchProductDetailsFailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
         }
     }
 

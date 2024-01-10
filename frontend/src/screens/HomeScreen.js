@@ -25,7 +25,7 @@ const HomeScreen = () => {
         dispatch(fetchProductsSuccess(data));
       } catch (err) {
 
-        dispatch(fetchProductsFailure(err.responsse && err.responsse.data.message ? err.response.data.message : err.message));
+        dispatch(fetchProductsFailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
       }
     }
 

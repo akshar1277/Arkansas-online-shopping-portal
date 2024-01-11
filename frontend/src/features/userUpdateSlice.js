@@ -25,11 +25,11 @@ const userUpdateSlice=createSlice({
             state.userInfo=action.payload;
             
         },
-        userProfileFail(state,action){
+        updateProfileFail(state,action){
             state.loading=false;
             state.error=action.payload;
         },
-        userProfileReset(state,action){
+        updateProfileReset(state,action){
             return {}
         }
    
@@ -39,4 +39,4 @@ const userUpdateSlice=createSlice({
 
 export default userUpdateSlice.reducer;
 
-export const {updateProfileStart,updateProfileSuccess,userProfileFail,userProfileReset} = userUpdateSlice.actions
+export const {updateProfileStart,updateProfileSuccess, updateProfileFail, updateProfileReset} = userUpdateSlice.actions

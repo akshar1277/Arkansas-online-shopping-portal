@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { userDetailStart,userDetailSuccess,userDetailFail } from '../features/userDetailSlice'
-import {updateProfileStart,updateProfileSuccess,userProfileFail,userProfileReset} from '../features/userUpdateSlice'
+import {updateProfileStart,updateProfileSuccess, updateProfileFail, updateProfileReset} from '../features/userUpdateSlice'
 import FormContainer from '../components/FormContainer'
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
@@ -44,10 +44,12 @@ const ProfileScreen = () => {
 
             }
             const {data} = await axios.get(`/api/users/${id}/`,config)
-            dispatch(updateProfileSuccess(data))
+            console.log(data);
+            dispatch(userDetailSuccess(data))
+    
            
         }catch(error){
-            dispatch(userProfileFail(
+            dispatch(userDetailFail(
                 error.response && error.response.data.detail ? error.response.data.detail : error.message,
             ))
             setVariant(0);
@@ -65,10 +67,10 @@ const ProfileScreen = () => {
 
             }
             const {data} = await axios.put(`/api/users/profile/update/`,user,config)
-            dispatch(userDetailSuccess(data))
+            dispatch(updateProfileSuccess(data))
             dispatch(userLoginSuccess(data))
         }catch(error){
-            dispatch(userDetailFail(
+            dispatch( updateProfileFail(
                 error.response && error.response.data.detail ? error.response.data.detail : error.message,
             ))
             setVariant(0);
@@ -82,7 +84,7 @@ const ProfileScreen = () => {
             navigate('/login')
         }else{
             if(!user || !user.name || success ){
-                dispatch(userProfileReset())
+                dispatch( updateProfileReset())
                 dispatch(getUserDetail('profile'))
                 
             }else{

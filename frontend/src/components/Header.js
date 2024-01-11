@@ -16,7 +16,7 @@ const Header = () => {
   const dispatch=useDispatch()
   const logoutHandler=()=>{
     dispatch(userLogout())
-    dispatch(userDetailReset())
+    // dispatch(userDetailReset())
 
   }
 

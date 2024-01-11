@@ -1,13 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit'
-
+import {thunk} from 'redux-thunk'
 // import productSlice from './features/productSlice'
 import productSliceReducer from './features/productSlice'
 import productDetailsReducer from './features/productDetailsSlice'
 import cartSliceReducer from './features/cartSlice'
 import userLoginSliceReducer from './features/userLoginSlice'
 import userRegisterSliceReducer from './features/userRegisterSlice'
-import {thunk} from 'redux-thunk'
-
+import userDetailSliceReducer from './features/userDetailSlice'
+import userUpdateSliceReducer from './features/userUpdateSlice'
  
 
 const cartItemsFromStorage=localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')): []
@@ -30,7 +30,9 @@ const store=configureStore({
         productDetails:productDetailsReducer,
         cart:cartSliceReducer,
         userLogin:userLoginSliceReducer,
-        userRegister:userRegisterSliceReducer
+        userRegister:userRegisterSliceReducer,
+        userDetail:userDetailSliceReducer,
+        userUpdateProfile:userUpdateSliceReducer
     },
     preloadedState:{
         cart:initialCartState,

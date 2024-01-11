@@ -4,17 +4,17 @@ import {Form ,Butoon,Row,Col,Button} from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { userRegisterStart,userRegisterSuccess,userRegisterFail,userLogout } from '../features/userRegisterSlice'
+import { userDetailStart,userDetailSuccess,userDetailFail } from '../features/userDetailSlice'
+import {updateProfileStart,updateProfileSuccess,userProfileFail,userProfileReset} from '../features/userUpdateSlice'
 import FormContainer from '../components/FormContainer'
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { userLoginSuccess } from '../features/userLoginSlice'
 
-
-
-const RegisterScreen = () => {
+const ProfileScreen = () => {
     const [name,setName]=useState('')
+    const [variant,setVariant]=useState(0);
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
     const [confirmpassword,setConfirmPassword]=useState('')
@@ -23,54 +23,103 @@ const RegisterScreen = () => {
     let location = useLocation();
     const navigate = useNavigate();
     const dispatch=useDispatch();
+
     const redirect=location.search ? location.search.split('=')[1]:'/'
 
-    const userRegister=useSelector(state=>state.userRegister)
-    const {userInfo,loading,error}=userRegister
-    
-    useEffect(()=>{
-        if(userInfo){
-            console.log('userInfo',userInfo)
-            navigate(redirect)
-        }
-    },[navigate,userInfo,redirect])
+    const userDetails=useSelector(state=>state.userDetail)
+    const {user,loading,error}=userDetails
+    const {userInfo}=useSelector(state=>state.userLogin)
+    const userUpdateProfile=useSelector(state=>state.userUpdateProfile)
+    const {success}=userUpdateProfile
 
-    const register=(name,email,password)=>async()=>{
+   
+    const getUserDetail=(id)=>async()=>{
         try{
-            dispatch(userRegisterStart())
+            dispatch(userDetailStart())
             const config={
                 headers:{
-                    'Content-type':'application/json'
+                    'Content-type':'application/json',
+                    Authorization:`Bearer ${userInfo.token}`
                 }
 
             }
-            const {data} = await axios.post('/api/users/register/',{'name':name,'email':email,'password':password},config)
-            dispatch(userRegisterSuccess(data))
-            dispatch(userLoginSuccess(data))
+            const {data} = await axios.get(`/api/users/${id}/`,config)
+            dispatch(updateProfileSuccess(data))
+           
         }catch(error){
-            dispatch(userRegisterFail(
+            dispatch(userProfileFail(
                 error.response && error.response.data.detail ? error.response.data.detail : error.message,
             ))
+            setVariant(0);
         }
     }
+
+    const updateUserProfile=(user)=>async()=>{
+        try{
+            dispatch(updateProfileStart())
+            const config={
+                headers:{
+                    'Content-type':'application/json',
+                    Authorization:`Bearer ${userInfo.token}`
+                }
+
+            }
+            const {data} = await axios.put(`/api/users/profile/update/`,user,config)
+            dispatch(userDetailSuccess(data))
+            dispatch(userLoginSuccess(data))
+        }catch(error){
+            dispatch(userDetailFail(
+                error.response && error.response.data.detail ? error.response.data.detail : error.message,
+            ))
+            setVariant(0);
+        }
+    }
+
+    
+    useEffect(()=>{
+        if(!userInfo){
+           
+            navigate('/login')
+        }else{
+            if(!user || !user.name || success ){
+                dispatch(userProfileReset())
+                dispatch(getUserDetail('profile'))
+                
+            }else{
+                setName(user.name)
+                setEmail(user.email)
+            }
+        }
+    },[dispatch,navigate,userInfo,user,success])
+
 
     const submitHandler=(e)=>{
         e.preventDefault();
         if(password!=confirmpassword){
             setMessage('Passwords do not match')
         }else{
-            dispatch(register(name,email,password));
+            dispatch(updateUserProfile({
+                'id':user._id,
+                'name':name,
+                'email':email,
+                'password':password
+            }))
+            setMessage('Your password is updated')
+            setVariant(1);
+
         }
        
-
 
 
     }
 
 
+
   return (
-    <FormContainer>
-        {message && <Message variant='danger'>{message}</Message>}
+    <Row>
+        <Col md={3}>
+            <h2>User Profile</h2>
+            {message && <Message variant={variant ? 'success' :'danger'}>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader/>}
         <Form onSubmit={submitHandler}>
@@ -100,10 +149,10 @@ const RegisterScreen = () => {
                   </Form.Control>
               </Form.Group>
               <Form.Group controlId='password' style={{ margin: '1rem 0' }}>
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label> New Password</Form.Label>
                   <Form.Control
                       type='password'
-                      required
+                      
                       placeholder='Enter Password'
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -116,7 +165,7 @@ const RegisterScreen = () => {
                   <Form.Label>confirm Password</Form.Label>
                   <Form.Control
                       type='password'
-                      required
+                     
                       placeholder='Confirm Password'
                       value={confirmpassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -127,17 +176,18 @@ const RegisterScreen = () => {
 
               <Form.Group style={{margin:'1rem 0'}}>
             <Button type='submit' variant='primary'>
-                Register
+                Update
             </Button>
             </Form.Group>
 
         </Form>
-        <Row className='py-3'>
-            <Col>
-            Have an Account? <Link to={redirect ? `/login?redirect=${redirect}`:'/register'}>Sign In</Link></Col>
-        </Row>
-    </FormContainer>
+        </Col>
+        <Col md={3}>
+            <h2>My Orders</h2>
+
+        </Col>
+    </Row>
   )
 }
 
-export default RegisterScreen
+export default ProfileScreen

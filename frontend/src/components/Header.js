@@ -8,6 +8,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch,useSelector } from 'react-redux';
 import { userLogout } from '../features/userLoginSlice';
+import { userDetailReset } from '../features/userDetailSlice';
 const Header = () => {
 
   const userLogin = useSelector(state=>state.userLogin)
@@ -15,6 +16,7 @@ const Header = () => {
   const dispatch=useDispatch()
   const logoutHandler=()=>{
     dispatch(userLogout())
+    dispatch(userDetailReset())
 
   }
 

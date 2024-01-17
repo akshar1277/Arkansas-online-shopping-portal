@@ -5,7 +5,7 @@ import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 import Message from '../components/Message'
 import { useParams } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
-import { cartAddItem ,carRemoveItem} from '../features/cartSlice'
+import { cartAddItem ,cartRemoveItem} from '../features/cartSlice'
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 
@@ -48,7 +48,7 @@ const CartScreen = () => {
 
   const removeFromCartHandler = (id)=>() =>{
     console.log('remove:',id)
-    dispatch(carRemoveItem(id))
+    dispatch(cartRemoveItem(id))
   }
 
 

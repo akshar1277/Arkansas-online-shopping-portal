@@ -8,20 +8,25 @@ import userLoginSliceReducer from './features/userLoginSlice'
 import userRegisterSliceReducer from './features/userRegisterSlice'
 import userDetailSliceReducer from './features/userDetailSlice'
 import userUpdateSliceReducer from './features/userUpdateSlice'
- 
+import orderSliceReducer from './features/orderSlice'
 
 const cartItemsFromStorage=localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')): []
 const userInfoFromStorage=localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')): null
-
+const shippingAddressFromStorage=localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')): {}
+const paymentMethodFromStorage=localStorage.getItem('paymentMethod') ? JSON.parse(localStorage.getItem('paymentMethod')):''
 //console.log('STORAGE',cartItemsFromStorage);
 const initialCartState = {
     cartItems: cartItemsFromStorage,
-    
+    shippingAddress:shippingAddressFromStorage,
+    paymentMethod:paymentMethodFromStorage
   };
 
 const initalUserState={
     userInfo:userInfoFromStorage,
 }
+// const initalShippingState={
+//     shippingAddress:shippingAddressFromStorage
+// }
 
 
 const store=configureStore({
@@ -32,11 +37,13 @@ const store=configureStore({
         userLogin:userLoginSliceReducer,
         userRegister:userRegisterSliceReducer,
         userDetail:userDetailSliceReducer,
-        userUpdateProfile:userUpdateSliceReducer
+        userUpdateProfile:userUpdateSliceReducer,
+        orderCreate:orderSliceReducer
     },
     preloadedState:{
         cart:initialCartState,
         userLogin:initalUserState,
+        // cart:initalShippingState,
 
     },
     middleware:(getDefaultMiddleware)=>[...getDefaultMiddleware(), thunk],

@@ -31,7 +31,13 @@ const RegisterScreen = () => {
     useEffect(()=>{
         if(userInfo){
             console.log('userInfo',userInfo)
-            navigate(`/${redirect}`)
+            if(redirect=='/'){
+                navigate(redirect)
+            }
+            else{
+                navigate(`/${redirect}`)
+            }
+            
         }
     },[navigate,userInfo,redirect])
 

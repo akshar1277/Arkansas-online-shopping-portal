@@ -13,9 +13,9 @@ const orderSlice=createSlice({
     reducers:{
         ordercreaterequest:(state)=>{
           return {
-            ...state,
+            
             loading:true,
-            error:null,
+           
             
            };
         },
@@ -30,8 +30,8 @@ const orderSlice=createSlice({
         },
         ordercreatereset(state,action){
             return {}
-        }
-
+        },
+        
     },
 });
 

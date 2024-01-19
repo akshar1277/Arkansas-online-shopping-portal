@@ -10,7 +10,7 @@ import userDetailSliceReducer from './features/userDetailSlice'
 import userUpdateSliceReducer from './features/userUpdateSlice'
 import orderSliceReducer from './features/orderSlice'
 import orderDetailSliceReducer from './features/orderDetailSlice'
-
+import orderPaySliceReducer from './features/orderPaySlice'
 
 
 
@@ -44,9 +44,10 @@ const store=configureStore({
         userDetail:userDetailSliceReducer,
         userUpdateProfile:userUpdateSliceReducer,
         orderCreate:orderSliceReducer,
-        orderDetails:orderDetailSliceReducer
+        orderDetails:orderDetailSliceReducer,
+        orderPay:orderPaySliceReducer
     },
-    preloadedState:{
+    preloadedState:{ 
         cart:initialCartState,
         userLogin:initalUserState,
         // cart:initalShippingState,

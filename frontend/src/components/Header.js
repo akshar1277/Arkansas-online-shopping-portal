@@ -9,6 +9,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch,useSelector } from 'react-redux';
 import { userLogout } from '../features/userLoginSlice';
 import { userDetailReset } from '../features/userDetailSlice';
+import { orderListreset } from '../features/orderListSlice';
 const Header = () => {
 
   const userLogin = useSelector(state=>state.userLogin)
@@ -16,7 +17,8 @@ const Header = () => {
   const dispatch=useDispatch()
   const logoutHandler=()=>{
     dispatch(userLogout())
-    // dispatch(userDetailReset())
+    dispatch(orderListreset())
+    dispatch(userDetailReset())
 
   }
 

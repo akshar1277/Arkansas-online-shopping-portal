@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import {Link, redirect} from 'react-router-dom'
-import {Form ,Butoon,Row,Col,Button} from 'react-bootstrap'
+import {Form ,Butoon,Row,Col,Button,Table} from 'react-bootstrap'
+import {LinkContainer} from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
@@ -11,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { userLoginSuccess } from '../features/userLoginSlice'
+import { orderListrequest,orderListssuccess,orderListfail,orderListreset } from '../features/orderListSlice'
 
 const ProfileScreen = () => {
     const [name,setName]=useState('')
@@ -28,10 +30,14 @@ const ProfileScreen = () => {
 
     const userDetails=useSelector(state=>state.userDetail)
     const {user,loading,error}=userDetails
+    
     const {userInfo}=useSelector(state=>state.userLogin)
+    
     const userUpdateProfile=useSelector(state=>state.userUpdateProfile)
     const {success}=userUpdateProfile
 
+    const orderList=useSelector(state=>state.orderList)
+    const {orders,loading:loadingOrders,error:errorOrders}=orderList
    
     const getUserDetail=(id)=>async()=>{
         try{
@@ -77,6 +83,32 @@ const ProfileScreen = () => {
         }
     }
 
+
+    const listMyOrders = () => async (dispatch, getState) => {
+        try {
+            dispatch(orderListrequest())
+            // const userInfo = getState().userLogin;
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+    
+            }
+            const { data } = await axios.get(`/api/orders/myorders`,config)
+            
+             dispatch(orderListssuccess(data));
+          
+    
+        } catch (error) {
+            dispatch(orderListfail(
+                error.response && error.response.data.detail ? error.response.data.detail : error.message,
+            ))
+          
+        }
+    }
+    
+
     
     useEffect(()=>{
         if(!userInfo){
@@ -86,6 +118,7 @@ const ProfileScreen = () => {
             if(!user || !user.name || success ){
                 dispatch( updateProfileReset())
                 dispatch(getUserDetail('profile'))
+                dispatch(listMyOrders())
                 
             }else{
                 setName(user.name)
@@ -184,8 +217,47 @@ const ProfileScreen = () => {
 
         </Form>
         </Col>
-        <Col md={3}>
+        <Col md={9}>
             <h2>My Orders</h2>
+            {loadingOrders ? (
+                <Loader/>
+            ):errorOrders ?(
+                <Message variant='danger'>{errorOrders}</Message>
+            ):(
+                <Table striped responsive className='table-sm'>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Paid</th>
+                            <th>Delivered</th>
+                            
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map(order=>(
+                            <tr key={order._id}>
+                                <td>{order._id}</td>
+                                <td>{order.createdAt.substring(0,10)}</td>
+                                <td>{order.totalPrice}</td>
+                                <td>{order.isPaid ? (
+                                    <i className='fas fa-check' style={{color:'green'}}></i>
+                                ):(
+                                    <i className='fas fa-times' style={{color:'red'}}></i>
+                                )}</td>
+                                <td>
+                                    <LinkContainer to={`/order/${order._id}`}>
+                                        <Button className='btn-sm'>Details</Button>
+                                    </LinkContainer>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+
+                </Table>
+            )}
 
         </Col>
     </Row>

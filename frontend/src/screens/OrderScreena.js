@@ -88,6 +88,9 @@ const OrderScreena = ({match}) => {
 
 
     useEffect(()=>{
+        if(!userInfo){
+            navigate('/login')
+        }
         if(!orderd || successPay || orderd._id !==  Number(id)){
             dispatch(orderpayreset())
             dispatch(getOrderDetails(id))

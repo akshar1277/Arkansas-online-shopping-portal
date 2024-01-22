@@ -1,6 +1,8 @@
-const listUsers=()=>async()=>{
+import { userDetailSuccess } from "../features/userDetailSlice"
+
+const updateUser=(user)=>async()=>{
     try{
-        dispatch(userListRequest())
+        dispatch(userupdateadminrequest())
         const config={
             headers:{
                 'Content-type':'application/json',
@@ -8,13 +10,15 @@ const listUsers=()=>async()=>{
             }
 
         }
-        const {data} = await axios.get(`/api/users/`,config)
-        dispatch(userListSucess(data))
+        const {data} = await axios.put(`/api/users/update/${id}/`,user,config)
+        dispatch(userupdateadminsuccess())
+        dispatch(userDetailSuccess(data))
        
     }catch(error){
-        dispatch( userListFail(
+        dispatch( userupdateadminfail(
             error.response && error.response.data.detail ? error.response.data.detail : error.message,
         ))
         
     }
 }
+  

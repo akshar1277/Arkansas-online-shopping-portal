@@ -19,7 +19,7 @@ const userListSlice=createSlice({
                
             
         },
-        userListSucess(state,action){
+        userListSuccess(state,action){
             state.loading=false;
             state.users=action.payload;
             
@@ -38,4 +38,4 @@ const userListSlice=createSlice({
 
 export default userListSlice.reducer;
 
-export const {userListRequest,userListSucess, userListFail, userListReset} = userListSlice.actions
+export const {userListRequest,userListSuccess, userListFail, userListReset} = userListSlice.actions

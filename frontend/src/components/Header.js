@@ -10,6 +10,9 @@ import { useDispatch,useSelector } from 'react-redux';
 import { userLogout } from '../features/userLoginSlice';
 import { userDetailReset } from '../features/userDetailSlice';
 import { orderListreset } from '../features/orderListSlice';
+import { userListReset } from '../features/userListSlice';
+
+
 const Header = () => {
 
   const userLogin = useSelector(state=>state.userLogin)
@@ -19,6 +22,7 @@ const Header = () => {
     dispatch(userLogout())
     dispatch(orderListreset())
     dispatch(userDetailReset())
+    dispatch(userListReset())
 
   }
 

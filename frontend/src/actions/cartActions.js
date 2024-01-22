@@ -1,23 +1,20 @@
-const listMyOrders = () => async (dispatch, getState) => {
-    try {
-        dispatch(orderListrequest())
-        // const userInfo = getState().userLogin;
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
+const listUsers=()=>async()=>{
+    try{
+        dispatch(userListRequest())
+        const config={
+            headers:{
+                'Content-type':'application/json',
+                Authorization:`Bearer ${userInfo.token}`
             }
 
         }
-        const { data } = await axios.get(`/api/orders/`,config)
-        
-         dispatch(orderListssuccess(data));
-      
-
-    } catch (error) {
-        dispatch(orderListfail(
+        const {data} = await axios.get(`/api/users/`,config)
+        dispatch(userListSucess(data))
+       
+    }catch(error){
+        dispatch( userListFail(
             error.response && error.response.data.detail ? error.response.data.detail : error.message,
         ))
-      
+        
     }
 }

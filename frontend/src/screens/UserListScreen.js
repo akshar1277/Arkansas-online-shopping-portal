@@ -37,7 +37,7 @@ const UserListScreen = () => {
       navigate('/login')
     }
     
-  },[dispatch,navigate,successDelete])
+  },[dispatch,navigate,successDelete,userInfo])
 
   const listUsers=()=>async()=>{
     try{

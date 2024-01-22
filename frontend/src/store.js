@@ -14,7 +14,10 @@ import orderPaySliceReducer from './features/orderPaySlice'
 import orderListSliceReducer from './features/orderListSlice'
 import userListSliceReducer from './features/userListSlice'
 import userDeleteSliceReducer from './features/userDeleteSlice'
-import userUpdateAdminSlice from './features/userUpdateAdminSlice'
+import userUpdateAdminSliceReducer from './features/userUpdateAdminSlice'
+import productDeleteSliceReducer from './features/productDeleteSlice'
+
+
 
 const cartItemsFromStorage=localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')): []
 const userInfoFromStorage=localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')): null
@@ -40,12 +43,13 @@ const store=configureStore({
     reducer:{
         productList:productSliceReducer,
         productDetails:productDetailsReducer,
+        productDelete:productDeleteSliceReducer,
         cart:cartSliceReducer,
         userLogin:userLoginSliceReducer,
         userRegister:userRegisterSliceReducer,
         userDetail:userDetailSliceReducer,
         userUpdateProfile:userUpdateSliceReducer,
-        userUpdateAdmin:userUpdateAdminSlice,
+        userUpdateAdmin:userUpdateAdminSliceReducer,
         userList:userListSliceReducer,
         orderCreate:orderSliceReducer,
         orderDetails:orderDetailSliceReducer,

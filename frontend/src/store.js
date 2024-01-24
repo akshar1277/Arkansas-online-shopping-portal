@@ -20,6 +20,8 @@ import productCreateSliceReducer from './features/productCreateSlice'
 import productUpdateSliceReducer from './features/productUpdateSlice'
 import orderAdminSliceReducer from './features/orderAdminSlice'
 import orderDeliverSliceReducer from './features/orderDeliverSlice'
+import productCreateReviewSliceReducer from './features/productCreateReviewSlice'
+
 
 const cartItemsFromStorage=localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')): []
 const userInfoFromStorage=localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')): null
@@ -48,6 +50,7 @@ const store=configureStore({
         productDelete:productDeleteSliceReducer,
         productCreate:productCreateSliceReducer,
         productUpdate:productUpdateSliceReducer,
+        productCreateReview:productCreateReviewSliceReducer,
         cart:cartSliceReducer,
         userLogin:userLoginSliceReducer,
         userRegister:userRegisterSliceReducer,

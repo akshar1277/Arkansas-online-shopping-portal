@@ -1,21 +1,23 @@
-const deliverOrder = (order) => async () => {
+const createProductReview = (productId,review) => async (dispatch, getState) => {
     try {
-        dispatch(orderdeliverrequest())
+        dispatch(productCreateReviewrequest())
+        
         const config = {
             headers: {
                 'Content-type': 'application/json',
                 Authorization: `Bearer ${userInfo.token}`
             }
-  
+
         }
-        const { data } = await axios.put(`/api/orders/${order._id}/deliver/`, {}, config)
-        dispatch(orderdeliverssuccess(data))
+        const { data } = await axios.post(`/api/products/${productId}/reviews`,review,config)
         
-  
+         dispatch(productCreateReviewsuccess(data));
+      
+        
     } catch (error) {
-        dispatch(orderdeliverfail(
+        dispatch(productCreateReviewfailure(
             error.response && error.response.data.detail ? error.response.data.detail : error.message,
         ))
       
     }
-  }
+}

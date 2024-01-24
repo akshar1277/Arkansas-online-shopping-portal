@@ -12,7 +12,7 @@ import {productDeleteStart,productDeleteSuccess,productDeleteFailure} from '../f
 
 import { LinkContainer } from 'react-router-bootstrap'
 import { fetchProductsFailure, fetchProductsStart, fetchProductsSuccess } from '../features/productSlice'
-
+import {productcreaterequest,productcreatesuccess,productcreatefailure, productcreatereset } from '../features/productCreateSlice'
 
 
 const ProductListScreen = () => {
@@ -23,11 +23,14 @@ const ProductListScreen = () => {
  
   const {loading:loadingDelete,success:successDelete,error:errorDelete}=useSelector(state=>state.productDelete)
  
+  const {product:createdProduct,loading:loadingCreate,success:successCreate,error:errorCreate}=useSelector(state=>state.productCreate)
+ 
 
   const { userInfo } = useSelector(state => state.userLogin)
 
 
   const fetchProducts =()=> async () => {
+
     dispatch(fetchProductsStart());
     try {
       const { data } = await axios.get('/api/products/')
@@ -39,13 +42,18 @@ const ProductListScreen = () => {
   }
 
   useEffect(()=>{
-    if(userInfo && userInfo.isAdmin){
-      dispatch(fetchProducts())
+    dispatch(productcreatereset())
+    
+    if(!userInfo.isAdmin){
+       navigate('/login')
+    }
+    if(successCreate){
+      navigate(`/admin/product/${createdProduct._id}/edit`)
     }else{
-      navigate('/login')
+      dispatch(fetchProducts())
     }
     
-  },[dispatch,navigate,userInfo,successDelete])
+  },[dispatch,navigate,userInfo,successDelete,successCreate,createdProduct])
 
   
 const deleteProduct = (id) => async (dispatch, getState) => {
@@ -84,8 +92,35 @@ const deleteProduct = (id) => async (dispatch, getState) => {
   
   }
 
-  const createProductHandler=(product)=>{
+  
+const createProduct = () => async (dispatch, getState) => {
+  try {
+      dispatch(productcreaterequest())
+      // const userInfo = getState().userLogin;
+      const config = {
+          headers: {
+              'Content-type': 'application/json',
+              Authorization: `Bearer ${userInfo.token}`
+          }
+
+      }
+      const { data } = await axios.post(`/api/products/create/`,{},config)
+      
+       dispatch(productcreatesuccess(data));
+    
+
+  } catch (error) {
+      dispatch(productcreatefailure(
+          error.response && error.response.data.detail ? error.response.data.detail : error.message,
+      ))
+    
+  }
+}
+
+  const createProductHandler=()=>{
     //create product
+    console.log('created')
+    dispatch(createProduct())
   }
 
 
@@ -99,7 +134,7 @@ const deleteProduct = (id) => async (dispatch, getState) => {
             <h1>Products</h1>
         </Col>
         <Col className='text-right'>
-            <Button className='my-3' onClick={()=>createProductHandler}>
+            <Button className='my-3' onClick={()=>createProductHandler()}>
                 <i className='fas fa-plus'></i> Create Product
             </Button>
 
@@ -109,6 +144,9 @@ const deleteProduct = (id) => async (dispatch, getState) => {
 
       {loadingDelete && <Loader/>}
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+
+      {loadingCreate && <Loader/>}
+      {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
 
       {loading 
         ?( <Loader/>)

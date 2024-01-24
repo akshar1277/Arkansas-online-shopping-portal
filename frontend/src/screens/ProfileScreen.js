@@ -125,7 +125,7 @@ const ProfileScreen = () => {
                 setEmail(user.email)
             }
         }
-    },[dispatch,navigate,userInfo,user,success])
+    },[dispatch,navigate,userInfo,user,success,orderList])
 
 
     const submitHandler=(e)=>{

@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { orderdetailsrequest,orderdetailssuccess,orderdetailsfail} from '../features/orderDetailSlice'
 import { orderpayrequest,orderpayssuccess,orderpayfail,orderpayreset} from '../features/orderPaySlice'
-
+import {orderdeliverrequest,orderdeliverssuccess,orderdeliverfail,orderdeliverreset} from '../features/orderDeliverSlice'
 const OrderScreena = ({match}) => {
 
     const {id}=useParams()
@@ -33,6 +33,9 @@ const OrderScreena = ({match}) => {
 
     const orderPay=useSelector(state=>state.orderPay)
     const {loading:loadingPay,success:successPay} = orderPay
+
+    const orderDeliver=useSelector(state=>state.orderDeliver)
+    const {loading:loadingDeliver,success:successDeliver} = orderDeliver
     // console.log(order)
     const neworderd= {...orderd,"itemPrice":'' }
     if(!loading && !error){
@@ -88,11 +91,13 @@ const OrderScreena = ({match}) => {
 
 
     useEffect(()=>{
+
         if(!userInfo){
             navigate('/login')
         }
-        if(!orderd || successPay || orderd._id !==  Number(id)){
+        if(!orderd || successPay || orderd._id !==  Number(id) || successDeliver ){
             dispatch(orderpayreset())
+            dispatch(orderdeliverreset())
             dispatch(getOrderDetails(id))
             console.log("helloooo")
         }else if(!orderd.isPaid){
@@ -100,7 +105,7 @@ const OrderScreena = ({match}) => {
             
         }
 
-    },[dispatch,successPay,id])
+    },[dispatch,successPay,id,successDeliver,orderd])
 
     const createOrder=(data,action)=>{
         return action.order.create({
@@ -140,11 +145,33 @@ const OrderScreena = ({match}) => {
         }
       }
 
-    // const successPaymentHandler = (paymentResult) =>{
-
+    const deliverHandler = () =>{
+        dispatch(deliverOrder(orderd))
        
 
-    // }
+    }
+
+    const deliverOrder = (order) => async () => {
+        try {
+            dispatch(orderdeliverrequest())
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+      
+            }
+            const { data } = await axios.put(`/api/orders/${orderd._id}/deliver/`, {}, config)
+            dispatch(orderdeliverssuccess(data))
+            
+      
+        } catch (error) {
+            dispatch(orderdeliverfail(
+                error.response && error.response.data.detail ? error.response.data.detail : error.message,
+            ))
+          
+        }
+      }
 
   
    
@@ -177,7 +204,7 @@ const OrderScreena = ({match}) => {
 
                             </p>
                             {orderd.isDelivered ? (
-                                <Message variant='success'>Delivered On {orderd.deliverdAt}</Message>
+                                <Message variant='success'>Delivered On {orderd.deliveredAt}</Message>
                             ):(
                                 <Message variant='warning'>Not Deliverd</Message>
                              
@@ -290,6 +317,17 @@ const OrderScreena = ({match}) => {
                             )}
                          
                         </ListGroup>
+                        {loadingDeliver && <Loader/>}
+                        {userInfo && userInfo.isAdmin && orderd.isPaid && !orderd.isDelivered && (
+                            <ListGroup.Item style={{padding:'5px'}}>
+                                <Button
+                               bsSize="large"
+                               className='btn-block'
+                               style={{ width: '100%' }}
+                                onClick={()=>deliverHandler()}
+                                >Mark As Deliver</Button>
+                            </ListGroup.Item>
+                        )}
                     </Card>
                 </Col>
             </Row>

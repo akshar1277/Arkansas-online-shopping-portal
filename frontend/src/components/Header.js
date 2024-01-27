@@ -31,7 +31,15 @@ const Header = () => {
       <Navbar bg='dark' variant='dark' data-bs-theme="dark" expand="lg" className="bg-body-tertiary" collapseOnSelect>
       <Container fluid>
         <LinkContainer to="/">
-        <Navbar.Brand >ShopPro</Navbar.Brand>
+        <Navbar.Brand >
+        {/* <img
+              src="../logo.png"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              alt=""
+            /> */}
+            Arkansas</Navbar.Brand>
         </LinkContainer>
         
         <Navbar.Toggle aria-controls="navbarScroll" />

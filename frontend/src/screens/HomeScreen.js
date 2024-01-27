@@ -7,21 +7,30 @@ import Message from '../components/Message'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProductsFailure, fetchProductsStart, fetchProductsSuccess } from '../features/productSlice'
-
+import { useLocation } from 'react-router-dom'
+import Paginate from '../components/Paginate'
+import ProductCarousel from '../components/ProductCarousel'
 
 const HomeScreen = () => {
   // const [products,setProducts]=useState([])
+  const location=useLocation()
+
+  let keyword=location.search
+  // keyword=keyword.slice(1)
+  console.log(keyword)
+
+
   const dispatch = useDispatch()
-  const { productList, loading, error } = useSelector(
+  const { productList, loading, error,page,pages } = useSelector(
     (state) => state.productList
   );
 
   useEffect(() => {
 
-    const fetchProducts = async () => {
+    const fetchProducts = (keyword='')=>async () => {
       dispatch(fetchProductsStart());
       try {
-        const { data } = await axios.get('/api/products/')
+        const { data } = await axios.get(`/api/products${keyword}`)
         dispatch(fetchProductsSuccess(data));
       } catch (err) {
 
@@ -40,17 +49,22 @@ const HomeScreen = () => {
     //   dispatch(listProducts(data))
     // }
 
-    fetchProducts()
-  }, [dispatch])
+    dispatch(fetchProducts(keyword))
+  }, [dispatch,keyword])
 
 
 
   return (
     <div>
+      {!keyword &&    <ProductCarousel/> }
+   
       <h1>Latest Products</h1>
       {loading ? <Loader/>
         : error ? <Message variant='danger'>{error}</Message>
           :
+          <div>
+
+         
           <Row>
             {productList.map(product => (
               <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
@@ -58,6 +72,9 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
+        
+          <Paginate page={page} pages={pages} keyword={keyword}/>
+          </div>
 
 
       }

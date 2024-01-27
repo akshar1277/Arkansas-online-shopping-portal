@@ -1,23 +1,10 @@
-const createProductReview = (productId,review) => async (dispatch, getState) => {
+const listTopProducts = ()=>async () => {
+    dispatch(productToprequest());
     try {
-        dispatch(productCreateReviewrequest())
-        
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+      const { data } = await axios.get(`/api/products/top/`)
+      dispatch(productTopsuccess(data));
+    } catch (err) {
 
-        }
-        const { data } = await axios.post(`/api/products/${productId}/reviews`,review,config)
-        
-         dispatch(productCreateReviewsuccess(data));
-      
-        
-    } catch (error) {
-        dispatch(productCreateReviewfailure(
-            error.response && error.response.data.detail ? error.response.data.detail : error.message,
-        ))
-      
+      dispatch(productTopfailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
     }
-}
+  }

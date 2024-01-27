@@ -31,27 +31,31 @@ const ProductScreen = ({ match }) => {
 
     const productCreateReview=useSelector(state=>state.productCreateReview)
     const {loadingProductReview,error:errorProductReview,success:successProductReview} = productCreateReview
+    
+    const fetchDetails = ()=>async () => {
+        dispatch(fetchProductDetailsStart());
+        try {
+            const { data } = await axios.get(`/api/products/${id}`)
+            dispatch(fetchProductDetailsSuccess(data));
+        } catch (err) {
+
+            dispatch(fetchProductDetailsFailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
+        }
+    }
+
 
     useEffect(() => {
 
-        const fetchDetails = async () => {
-            dispatch(fetchProductDetailsStart());
-            try {
-                const { data } = await axios.get(`/api/products/${id}`)
-                dispatch(fetchProductDetailsSuccess(data));
-            } catch (err) {
-
-                dispatch(fetchProductDetailsFailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
-            }
+        if(successProductReview){
+            setRating(0)
+            setComment('')
+            dispatch(productCreateReviewreset())
         }
+        
+      
 
-        // async function fetchProduct(){
-        //   const {data}= await axios.get(`/api/products/${id}`)
-        //   setProduct(data)
-        // }
-
-        fetchDetails()
-    }, [dispatch, id])
+        dispatch(fetchDetails())
+    }, [dispatch, id,successProductReview])
 
     const navigate = useNavigate();
 
@@ -61,9 +65,37 @@ const ProductScreen = ({ match }) => {
     }
 
     const submitHanlder=(e)=>{
-        e.preventdefault()
-
+        e.preventDefault();
+        dispatch(createProductReview(id,{
+            rating,
+            comment
+        }))
     }
+
+    const createProductReview = (productId,review) => async (dispatch, getState) => {
+        try {
+            dispatch(productCreateReviewrequest())
+            
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+    
+            }
+            const { data } = await axios.post(`/api/products/${productId}/reviews/`,review,config)
+            
+             dispatch(productCreateReviewsuccess(data));
+          
+            
+        } catch (error) {
+            dispatch(productCreateReviewfailure(
+                error.response && error.response.data.detail ? error.response.data.detail : error.message,
+            ))
+          
+        }
+    }
+    
 
 
     // const product=products.find((p)=>p._id==id)
@@ -157,8 +189,8 @@ const ProductScreen = ({ match }) => {
                             </Col>
                         </Row>
                         
-                        <Row>
-                            <Col md={6}>
+                        <Row style={{marginTop:'25px'}}>
+                            <Col md={6} >
                                 <h4>Reviews</h4>
                                 {product.reviews.length===0 && <Message variant='info'>No Reviews</Message>}
                                 <ListGroup variant='flush'>
@@ -172,19 +204,49 @@ const ProductScreen = ({ match }) => {
                                     ))}
                                     <ListGroup.Item>
                                         <h4>Write a review</h4>
+                                        {loadingProductReview && <Loader/>}
+                                        {successProductReview && <Message variant='success'>Review Submitted</Message>}
+                                        {errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
                                         {userInfo ?(
-                                            <Form onSubmit={()=>submitHanlder()}>
-                                                <Form.Group controlId='rating'>
-                                                    {/* <Form.Lable>Rating</Form.Lable> */}
+                                            <Form onSubmit={(e)=>submitHanlder(e)}>
+                                                 
+                                                <Form.Group controlId='rating'  Lable='rating' style={{marginTop:'15px'}}>
+                                                <Form.Label>Rating</Form.Label>
                                                     <Form.Control
                                                         Lable='rating'
                                                         as='select'
                                                         value={rating}
                                                         onChange={(e)=>setRating(e.target.value)}
                                                     >
-
+                                                        <option value=''>Select...</option>
+                                                        <option value='1'>1 - Poor</option>
+                                                        <option value='2'>2 - Fair</option>
+                                                        <option value='3'>3 - Good</option>
+                                                        <option value='4'>4 - Vary Good</option>
+                                                        <option value='5'>5 - Excellent</option>
                                                     </Form.Control>
                                                 </Form.Group>
+                                                
+                                                <Form.Group controlId='comment'
+                                                    style={{marginTop:'15px'}}         
+                                                    >
+                                                    <Form.Label>Review</Form.Label>
+                                                    <Form.Control Lable='Review' as='textarea'
+                                                             row='5'
+                                                             value={comment}
+                                                             onChange={(e)=>setComment(e.target.value)}>
+                                                       
+                                                    </Form.Control>
+                                                </Form.Group>
+                                                <Button 
+                                                    disabled={loadingProductReview}
+                                                    type='submit'
+                                                    variant='primary'
+                                                    style={{marginTop:'15px'}}
+                                                    
+                                                >
+                                                    Submit
+                                                </Button>
                                             </Form>
                                         ):(
                                             <Message variant='info'>Please <Link to='/login'>login</Link> to write a review</Message>

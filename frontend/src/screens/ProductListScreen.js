@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { userListRequest,userListSuccess, userListFail, userListReset} from '../features/userListSlice'
 import {productDeleteStart,productDeleteSuccess,productDeleteFailure} from '../features/productDeleteSlice'
-
+import Paginate from '../components/Paginate'
 import { LinkContainer } from 'react-router-bootstrap'
 import { fetchProductsFailure, fetchProductsStart, fetchProductsSuccess } from '../features/productSlice'
 import {productcreaterequest,productcreatesuccess,productcreatefailure, productcreatereset } from '../features/productCreateSlice'
@@ -19,7 +19,7 @@ const ProductListScreen = () => {
 
   const dispatch=useDispatch()
   const navigate=useNavigate()
-  const {productList,loading,error}=useSelector(state=>state.productList)
+  const {productList,loading,error,page,pages}=useSelector(state=>state.productList)
  
   const {loading:loadingDelete,success:successDelete,error:errorDelete}=useSelector(state=>state.productDelete)
  
@@ -29,18 +29,20 @@ const ProductListScreen = () => {
   const { userInfo } = useSelector(state => state.userLogin)
 
 
-  const fetchProducts =()=> async () => {
+   const fetchProducts = (keyword='')=>async () => {
+      dispatch(fetchProductsStart());
+      try {
+        const { data } = await axios.get(`/api/products${keyword}`)
+        dispatch(fetchProductsSuccess(data));
+      } catch (err) {
 
-    dispatch(fetchProductsStart());
-    try {
-      const { data } = await axios.get('/api/products/')
-      dispatch(fetchProductsSuccess(data));
-    } catch (err) {
-
-      dispatch(fetchProductsFailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
+        dispatch(fetchProductsFailure(err.responsse && err.responsse.data.detail ? err.response.data.detail : err.message));
+      }
     }
-  }
-
+  const location=useLocation()
+  let keyword=location.search
+  // let keyword = keywords.slice(1);
+  console.log(keyword)
   useEffect(()=>{
     dispatch(productcreatereset())
     
@@ -50,10 +52,10 @@ const ProductListScreen = () => {
     if(successCreate){
       navigate(`/admin/product/${createdProduct._id}/edit`)
     }else{
-      dispatch(fetchProducts())
+      dispatch(fetchProducts(keyword))
     }
     
-  },[dispatch,navigate,userInfo,successDelete,successCreate,createdProduct])
+  },[dispatch,navigate,userInfo,successDelete,successCreate,createdProduct,keyword])
 
   
 const deleteProduct = (id) => async (dispatch, getState) => {
@@ -153,6 +155,7 @@ const createProduct = () => async (dispatch, getState) => {
         :error
           ?(<Message variant='danger'>{error}</Message>)
           :(
+            <div>
             <Table striped bordered hover responsive className='table-sm'>
               <thead>
                 <tr>
@@ -190,6 +193,8 @@ const createProduct = () => async (dispatch, getState) => {
                 ))}
               </tbody>
             </Table>
+            <Paginate pages={pages} page={page} isAdmin={true}/>
+            </div>
           )
 
     }

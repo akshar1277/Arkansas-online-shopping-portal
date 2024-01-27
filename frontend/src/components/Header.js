@@ -11,7 +11,7 @@ import { userLogout } from '../features/userLoginSlice';
 import { userDetailReset } from '../features/userDetailSlice';
 import { orderListreset } from '../features/orderListSlice';
 import { userListReset } from '../features/userListSlice';
-
+import SearchBox from './SearchBox';
 
 const Header = () => {
 
@@ -35,9 +35,10 @@ const Header = () => {
         </LinkContainer>
         
         <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
+        <Navbar.Collapse id="navbarScroll" >
+          <SearchBox/>
           <Nav
-            className="me-auto ml-auto my-2 my-lg-0"
+            className="ms-auto ml-auto my-2 my-lg-0"
             style={{ maxHeight: '100px' }}
             navbarScroll
           >

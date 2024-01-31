@@ -26,7 +26,7 @@ const LoginScreen = () => {
     
     useEffect(()=>{
         if(userInfo){
-            console.log(redirect)
+            
             if(redirect=='/'){
                 navigate(redirect)
             }else{

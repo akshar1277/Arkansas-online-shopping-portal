@@ -46,7 +46,7 @@ const OrderListScreen = () => {
 
         }
         const { data } = await axios.get(`/api/orders/`,config)
-        console.log(data)
+      
          dispatch(orderAdminssuccess(data));
       
 

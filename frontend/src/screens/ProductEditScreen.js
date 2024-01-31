@@ -133,7 +133,7 @@ const updateProduct = (product) => async (dispatch, getState) => {
     
       
 const uploadFileHandler = async(e)=>{
-    console.log('file is uploding')
+    // console.log('file is uploding')
     const file=e.target.files[0]
     const formData=new FormData()
     formData.append('image',file)

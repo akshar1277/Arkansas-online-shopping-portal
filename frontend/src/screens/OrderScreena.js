@@ -18,13 +18,13 @@ const OrderScreena = ({match}) => {
 
     const {id}=useParams()
     const orderId=id
-    console.log(orderId)
+    
     const dispatch = useDispatch()
     
     const [sdkReady,setSdkReady] = useState(false)
    
     const { userInfo } = useSelector(state => state.userLogin)
-    // console.log(userInfo)
+ 
     const navigate=useNavigate()
 
 
@@ -70,7 +70,7 @@ const OrderScreena = ({match}) => {
 
             }
             const { data } = await axios.get(`/api/orders/${id}/`,config)
-            console.log("ordreitems",data)
+           
              dispatch(updateOrderDetails(data));
           
 

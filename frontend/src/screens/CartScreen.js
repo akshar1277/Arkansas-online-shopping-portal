@@ -21,7 +21,7 @@ const CartScreen = () => {
 
   const cart = useSelector(state => state.cart)
   const { cartItems } = cart
-  console.log('cartItems', cartItems)
+ 
 
   const addToCart = (id, qty)=>async () => {
 
@@ -35,7 +35,7 @@ const CartScreen = () => {
       qty
 
     }
-    console.log(items);
+   
     dispatch(cartAddItem(items));
   }
 
@@ -47,7 +47,7 @@ const CartScreen = () => {
   }, [dispatch, id, qty])
 
   const removeFromCartHandler = (id)=>() =>{
-    console.log('remove:',id)
+  
     dispatch(cartRemoveItem(id))
   }
 

@@ -50,7 +50,7 @@ const ProfileScreen = () => {
 
             }
             const {data} = await axios.get(`/api/users/${id}/`,config)
-            console.log(data);
+           
             dispatch(userDetailSuccess(data))
     
            
@@ -157,7 +157,7 @@ const ProfileScreen = () => {
             {message && <Message variant={variant ? 'success' :'danger'}>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader/>}
-        <Form onSubmit={submitHandler}>
+        <Form onSubmit={(e)=>submitHandler(e)}>
 
               <Form.Group controlId='name' style={{ margin: '1rem 0' }}>
                   <Form.Label>Name</Form.Label>

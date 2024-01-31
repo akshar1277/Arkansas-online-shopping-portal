@@ -75,7 +75,7 @@ export const PlaceOrderScreen = () => {
             totalPrice:totalPrice
 
         }))
-        console.log('placeorder')
+        // console.log('placeorder')
     }
 
 

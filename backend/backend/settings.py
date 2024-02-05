@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-e#!n#x%cjgs3cj+b@zl=cc*s(bw^4l9pe73@upc&ciswi!tso('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [ ]
+ALLOWED_HOSTS = [ '*']
 
 
 # Application definition
@@ -103,6 +103,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     
     'django.middleware.security.SecurityMiddleware',
@@ -204,7 +205,8 @@ STATICFILES_DIRS=[
 
 ]
 
-MEDIA_ROOT = 'static/images'
+MEDIA_ROOT = BASE_DIR /'static/images'
+STATIC_ROOT = BASE_DIR /'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -212,4 +214,7 @@ MEDIA_ROOT = 'static/images'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
 CORS_ALLOW_ALL_ORIGINS=True
+
+

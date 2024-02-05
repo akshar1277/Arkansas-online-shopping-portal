@@ -84,8 +84,9 @@ const ProfileScreen = () => {
     }
 
 
-    const listMyOrders = () => async (dispatch, getState) => {
+    const listMyOrders = () => async () => {
         try {
+
             dispatch(orderListrequest())
             // const userInfo = getState().userLogin;
             const config = {
@@ -95,7 +96,7 @@ const ProfileScreen = () => {
                 }
     
             }
-            const { data } = await axios.get(`/api/orders/myorders`,config)
+            const { data } = await axios.get(`/api/orders/myorders/`,config)
             
              dispatch(orderListssuccess(data));
           
@@ -111,6 +112,26 @@ const ProfileScreen = () => {
 
     
     useEffect(()=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         if(!userInfo){
            
             navigate('/login')
@@ -125,9 +146,9 @@ const ProfileScreen = () => {
                 setEmail(user.email)
             }
         }
-    },[dispatch,navigate,userInfo,user,success,orderList])
+    },[dispatch,navigate,userInfo,user,success])
 
-
+    
     const submitHandler=(e)=>{
         e.preventDefault();
         if(password!=confirmpassword){
@@ -147,6 +168,8 @@ const ProfileScreen = () => {
 
 
     }
+
+   
 
 
 
@@ -215,7 +238,7 @@ const ProfileScreen = () => {
             </Button>
             </Form.Group>
 
-        </Form>
+        </Form> 
         </Col>
         <Col md={9}>
             <h2>My Orders</h2>

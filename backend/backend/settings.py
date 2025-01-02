@@ -153,7 +153,7 @@ DATABASES = {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'PROSHOP',
 #         'USER':'postgres',
-#         'PASSWORD':'@aAqazplm1277',
+#         'PASSWORD':'',
 #         'HOST':'localhost',
 #         'PORT':'5432',
 
